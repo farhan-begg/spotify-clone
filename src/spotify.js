@@ -10,6 +10,20 @@ const scopes = [
     "user-top-read",
     "user-modify-playback-state",
 ];
+// grabs hash token 
+export const getTokenFromUrl = () => {
+    return window.location.hash
+    .substring(1)
+    .split('&')
+    .reduce((initial, item) => {
+        // #accesstoken=mysupersecret& splits it at the equal sign
+        let parts = item.split('=')
+        // go into initial array thats return decode access key
+        initial[parts[0]] = decodeURIComponent(parts[1])
+        
+        return initial;
+    }, {})
+}
 
 export const accessUrl = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join(
     "%20"

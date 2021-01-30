@@ -1,12 +1,43 @@
 import './App.css';
 import Login from './Login';
+import { useEffect, useState } from 'react';
+import { getTokenFromUrl } from './spotify';
 
 
-// client id :====== bbded4a98bc34320916f53a2f7983f73
 function App() {
+
+  const [token, setToken ] =  useState(null)
+
+
+  // Run code based on a given condition
+  useEffect(() => {
+    // grab the token from url 
+    const hash = getTokenFromUrl()
+    // clears token
+    window.location.hash = ""
+
+    const _token = hash.access_token;
+
+    if (_token){
+      setToken(_token)
+    }
+
+    console.log("I have a token", token)
+  }, []);
+
+
+
   return (
     <div className="app">
-      <Login />
+     {/* if token show player else show login page */}
+      {
+        token ? (
+          <h1> I am logged in</h1>
+        ) : (
+          <Login />
+        )
+      }
+
     </div>
   );
 }
