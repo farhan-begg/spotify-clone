@@ -1,17 +1,20 @@
 import './App.css';
 import Login from './Login';
+import Player from './Player'
 import { useEffect, useState } from 'react';
 import { getTokenFromUrl } from './spotify';
 import SpotifyWebApi from "spotify-web-api-js"
+import { useDataLayerValue } from './DataLayer';
 
 // instance of spotify
 const spotify = new SpotifyWebApi();
 
 function App() {
   const [token, setToken ] =  useState(null)
+  const [{ user }, dispatch] = useDataLayerValue();
   // Run code based on a given condition
   useEffect(() => {
-    // grab the token from url 
+    // grabs token from url 
     const hash = getTokenFromUrl()
     // clears token
     window.location.hash = ""
@@ -23,7 +26,12 @@ function App() {
       // async function gets user accounts 
       spotify.getMe().then(user => {
         console.log('***********userrrrrr', user)
-      })
+        // pop in user into the datalayer
+        dispatch({
+          type: 'SET_USER',
+          user: user
+        });
+      });
     }
     console.log("I have a token ******", token)
   }, []);
@@ -33,7 +41,8 @@ function App() {
      {/* if token show player else show login page */}
       {
         token ? (
-          <h1> I am logged in</h1>
+          <Player />
+     
         ) : (
           <Login />
         )
